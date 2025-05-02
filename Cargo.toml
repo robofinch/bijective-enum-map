@@ -1,0 +1,14 @@
+[package]
+name = "bijective-enum-map"
+version = "0.1.0"
+edition = "2021"
+# rust-version = TODO (want to have as low of a MSRV as possible)
+authors = ["Finley Huggins"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/robofinch/subslice-to-array"
+description = "Convert an enum to and from another type, with From (or TryFrom)"
+keywords = ["enum", "map", "from", "try_from", "conversion"]
+categories = ["rust-patterns", "encoding", "no-std", "no-std::no-alloc"]
+
+[dependencies]
