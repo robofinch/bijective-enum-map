@@ -1,6 +1,8 @@
 #![no_std]
 
 // See https://linebender.org/blog/doc-include for this README inclusion strategy
+//! [`bijective_enum_map`]: bijective_enum_map
+//! [`injective_enum_map`]: injective_enum_map
 //! [`From`]: From
 //! [`TryFrom`]: TryFrom
 // File links are not supported by rustdoc

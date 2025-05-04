@@ -55,7 +55,7 @@
 /// assert_eq!(u8::from(AtMostTwo::One), 1_u8);
 /// assert_eq!(AtMostTwo::try_from(2_u8), Ok(AtMostTwo::Two));
 /// assert_eq!(AtMostTwo::try_from(4_u8), Err(()));
-/// // `str::from` would also work
+/// // `<&str>::from` would also work
 /// assert_eq!(<&'static str>::from(AtMostTwo::One), "one");
 /// assert_eq!(AtMostTwo::try_from("two"), Ok(AtMostTwo::Two));
 /// assert_eq!(AtMostTwo::try_from("four"), Err(()));
