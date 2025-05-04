@@ -10,9 +10,10 @@ macro_rules! __impl_from_enum {
         impl ::core::convert::From<$enum_ty> for $into {
             #[inline]
             fn from(value: $enum_ty) -> Self {
-                // This is because we can't do <$enum_ty>::$enum_variant$(($tuple))?$({$struct})?
+                // This is because we can't do <$enum_ty>::$enum_variant
                 // (that syntax is unstable/experimental in that position)
                 use $enum_ty as __enum_ty;
+                #[warn(unreachable_patterns)]
                 match value {
                     $( __enum_ty::$enum_variant$(($($tuple)*))?$({$($struct)*})? => $value ),+
                 }

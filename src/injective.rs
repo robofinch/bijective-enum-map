@@ -23,7 +23,8 @@
 /// If the map is not injective, and multiple enum variants map to the same value, then a compiler
 /// warning from `#[warn(unreachable_patterns)]` *should* be printed in most circumstances,
 /// but it could be a silent logic error. In such a case, only the first enum variant
-/// listed will be mapped from the duplicate value.
+/// listed will be mapped from the duplicate value. Such a warning should also occur if an enum
+/// variant is repeated.
 ///
 /// # Examples
 ///
@@ -379,6 +380,39 @@ mod tests {
             Err(()),
         );
     }
+
+    #[test]
+    fn intentionally_non_injective() {
+        #[derive(Debug, PartialEq, Eq)]
+        enum Enum {
+            One,
+            Two,
+            Three,
+        }
+
+        #[derive(Debug, PartialEq, Eq)]
+        enum Other {
+            Uno,
+            Dos,
+            Tres,
+            Cuatro,
+        }
+
+        #[allow(warnings)]
+        {
+            injective_enum_map! {
+                Other, Enum,
+                Uno    <=> Enum::One,
+                Dos    <=> Enum::Two,
+                Tres   <=> Enum::Three,
+                Cuatro <=> Enum::Three,
+            }
+        }
+
+        assert_eq!(Other::try_from(Enum::Three), Ok(Other::Tres));
+        assert_eq!(Enum::from(Other::Uno), Enum::One);
+        assert_eq!(Enum::from(Other::Cuatro), Enum::Three);
+    }
 }
 
 #[cfg(doctest)]
@@ -429,6 +463,30 @@ pub mod compile_fail_tests {
     /// }
     /// ```
     pub fn _nonempty_not_injective_warning() {}
+
+    /// ```compile_fail
+    /// #![deny(warnings)]
+    ///
+    /// use bijective_enum_map::injective_enum_map;
+    /// enum AtMostTwo {
+    ///     Zero,
+    ///     One,
+    ///     Two,
+    /// }
+    ///
+    /// enum BoolEnum {
+    ///     True,
+    ///     False,
+    /// }
+    ///
+    /// injective_enum_map! {
+    ///     bool, AtMostTwo,
+    ///     False <=> AtMostTwo::Zero,
+    ///     True  <=> AtMostTwo::One,
+    ///     False <=> AtMostTwo::Two,
+    /// }
+    /// ```
+    pub fn _nonempty_not_surjective_warning() {}
 
     // A warning is printed, but unfortunately, #[deny] doesn't work very well in doctests.
     // /// ```compile_fail
