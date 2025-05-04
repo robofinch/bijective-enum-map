@@ -2,7 +2,7 @@
 name = "bijective-enum-map"
 version = "0.1.0"
 edition = "2021"
-# rust-version = TODO (want to have as low of a MSRV as possible)
+rust-version = "1.56"
 authors = ["Finley Huggins"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
@@ -12,3 +12,6 @@ keywords = ["enum", "map", "from", "try_from", "conversion"]
 categories = ["rust-patterns", "encoding", "no-std", "no-std::no-alloc"]
 
 [dependencies]
+
+[features]
+use_type_as = []

@@ -1,3 +1,4 @@
+#[cfg(feature = "use_type_as")]
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __impl_from_enum {
@@ -12,10 +13,44 @@ macro_rules! __impl_from_enum {
             fn from(value: $enum_ty) -> Self {
                 // This is because we can't do <$enum_ty>::$enum_variant
                 // (that syntax is unstable/experimental in that position)
-                use $enum_ty as __enum_ty;
+                use $enum_ty as __EnumTy;
                 #[warn(unreachable_patterns)]
                 match value {
-                    $( __enum_ty::$enum_variant$(($($tuple)*))?$({$($struct)*})? => $value ),+
+                    $( __EnumTy::$enum_variant$(($($tuple)*))?$({$($struct)*})? => $value ),+
+                }
+            }
+        }
+    };
+
+    { $enum_ty:ty, $into:ty $(,)? } => {
+        impl ::core::convert::From<$enum_ty> for $into {
+            #[inline]
+            fn from(value: $enum_ty) -> Self {
+                match value {}
+            }
+        }
+    };
+}
+
+#[cfg(not(feature = "use_type_as"))]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __impl_from_enum {
+    {
+        $enum_ty:ty,
+        $into:ty,
+        $($enum_variant:ident$(($($tuple:tt)*))?$({$($struct:tt)*})? <=> $value:expr),+
+        $(,)?
+    } => {
+        impl ::core::convert::From<$enum_ty> for $into {
+            #[inline]
+            fn from(value: $enum_ty) -> Self {
+                // This is because we can't do <$enum_ty>::$enum_variant
+                // (that syntax is unstable/experimental in that position)
+                type __EnumTy = $enum_ty;
+                #[warn(unreachable_patterns)]
+                match value {
+                    $( __EnumTy::$enum_variant$(($($tuple)*))?$({$($struct)*})? => $value ),+
                 }
             }
         }
